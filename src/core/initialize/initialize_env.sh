@@ -156,42 +156,45 @@ _initialize_env_show() {
 }
 
 
+
 _about_initialize_env() {
 	cat <<"EOF"
-Usage:
-	initialize_env help This shows the help message.
-	initialize_env show Display detected environment variables and OS file contents.
-	initialize_env export Exports the detected environment variables in a shell-safe format.
-
-About:
-	The initialize_env module detects environment details and exposes variables
-	used by other config-v2 modules. It reads /etc/os-release and
-	/etc/armbian-release when available (non-fatal).
-
-Commands:
+Usage: 
 	help, -h, --help
 		Show this help message.
 
 	show, -s
-		Print detected environment variables and the contents of OS files
-		(/etc/armbian-release and /etc/os-release) to stdout.
+		Print the detected environment variables and, if readable,
+		the contents of:
+		  - /etc/armbian-release
+		  - /etc/os-release
 
 	export, -e
 		Print shell-safe export statements for the detected variables.
-		This is intended for eval usage, for example:
+		Designed for use with eval, e.g.:
 		  eval "$(initialize_env export)"
 
+About:
+	The initialize_env module detects common environment details and
+	exposes variables that other config-v2 modules expect. It will read
+	/etc/os-release and /etc/armbian-release when available (these are
+	non-fatal if missing).
+
+Commands:
+
 Notes:
-	- To set variables in the current shell when sourcing this file, call:
-	  _initialize_env_vars
-	- To export variables into the current shell without sourcing, use:
-	  eval "$(initialize_env export)"
+	- To initialize variables in the current shell when sourcing this file,
+	  call:
+	    _initialize_env_vars
+	- To export variables into the current shell from a non-sourced
+	  context, use:
+	    eval "$(initialize_env export)"
 	- Variables provided:
 	  BIN_ROOT, LIB_ROOT, WEB_ROOT, DOC_ROOT, SHARE_ROOT,
 	  BACKTITLE, TITLE, DISTRO, DISTROID, KERNELID,
 	  DEFAULT_ADAPTER, LOCALIPADD, LOCALSUBNET,
 	  OS_INFO, OS_RELEASE
-	- The module is safe to source in scripts or to invoke directly.
+	- Module is safe to source in scripts or invoke directly.
 EOF
 }
 
