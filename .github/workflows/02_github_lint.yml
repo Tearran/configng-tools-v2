@@ -1,0 +1,54 @@
+name: 02 Lint scripts
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+concurrency:
+  group: linter-${{github.event.pull_request.number}}
+  cancel-in-progress: true
+
+jobs:
+
+  Shellcheck:
+
+    name: Shell script analysis
+    runs-on: ubuntu-latest
+    steps:
+
+       - name: Checkout repository
+         uses: actions/checkout@v4
+
+       - name: Get changed files
+         id: changed-files
+         uses: tj-actions/changed-files@v46
+
+       - name: "Show which files we check"
+         shell: bash {0}
+         run: |
+           echo "# Checked files:" >> $GITHUB_STEP_SUMMARY
+           echo "${{ steps.changed-files.outputs.all_changed_files }}" | sed "s/ /\n/g" >> $GITHUB_STEP_SUMMARY
+
+       - name: Environment variables
+         run: sudo -E bash -c set
+
+       - name: "Shellcheck lint error report in diff format"
+         shell: bash {0}
+         run: |
+
+           if [[ -n "${{ steps.changed-files.outputs.all_changed_files }}" ]]; then
+               FILES="${{ steps.changed-files.outputs.all_changed_files }}"
+               for file in $FILES; do
+                   if grep -qE "^#\!/.*bash" $file; then
+                       shellcheck --severity=error $file || ret=$?
+                   fi
+               done
+           else
+               FILES="$(find . -name "*.sh" ! -path '*/.git*/*' -exec grep -Iq . {} \; -print)"
+               for file in $FILES; do
+                   if grep -qE "^#\!/.*bash" $file; then
+                       shellcheck --severity=error $file || ret=$?
+                   fi
+               done
+           fi
+           exit $ret
