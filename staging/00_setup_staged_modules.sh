@@ -138,6 +138,7 @@ ${MODULE}() {
 		*)
 			echo "Unknown command: \${1}"
 			_about_${MODULE}
+			return 1
 	esac
 }
 
