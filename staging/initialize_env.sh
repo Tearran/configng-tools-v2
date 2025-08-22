@@ -158,17 +158,40 @@ _initialize_env_show() {
 
 _about_initialize_env() {
 	cat <<"EOF"
-Usage: initialize_env [help|-h|--help]
+Usage:
+	initialize_env help This shows the help message.
+	initialize_env show Display detected environment variables and OS file contents.
+	initialize_env export Exports the detected environment variables in a shell-safe format.
 
 About:
-	The 'initialize_env' module provides environment detection utilities.
+	The initialize_env module detects environment details and exposes variables
+	used by other config-v2 modules. It reads /etc/os-release and
+	/etc/armbian-release when available (non-fatal).
 
 Commands:
-	help    - Show this help message.
+	help, -h, --help
+		Show this help message.
+
+	show, -s
+		Print detected environment variables and the contents of OS files
+		(/etc/armbian-release and /etc/os-release) to stdout.
+
+	export, -e
+		Print shell-safe export statements for the detected variables.
+		This is intended for eval usage, for example:
+		  eval "$(initialize_env export)"
 
 Notes:
-	- To set variables in the current shell: source this file and call _initialize_env_vars
-	- When executed, this file's test entrypoint verifies the environment and prints variables.
+	- To set variables in the current shell when sourcing this file, call:
+	  _initialize_env_vars
+	- To export variables into the current shell without sourcing, use:
+	  eval "$(initialize_env export)"
+	- Variables provided:
+	  BIN_ROOT, LIB_ROOT, WEB_ROOT, DOC_ROOT, SHARE_ROOT,
+	  BACKTITLE, TITLE, DISTRO, DISTROID, KERNELID,
+	  DEFAULT_ADAPTER, LOCALIPADD, LOCALSUBNET,
+	  OS_INFO, OS_RELEASE
+	- The module is safe to source in scripts or to invoke directly.
 EOF
 }
 
