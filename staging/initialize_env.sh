@@ -78,10 +78,10 @@ _initialize_env_vars() {
 
 	# Export variables so callers that source this file (or eval exports) see them.
 	# Exporting here makes the vars available to child processes and subshells.
-	export BIN_ROOT LIB_ROOT WEB_ROOT DOC_ROOT SHARE_ROOT
-	export BACKTITLE TITLE DISTRO DISTROID KERNELID
-	export DEFAULT_ADAPTER LOCALIPADD LOCALSUBNET
-	export OS_INFO OS_RELEASE
+#	export BIN_ROOT LIB_ROOT WEB_ROOT DOC_ROOT SHARE_ROOT
+#	export BACKTITLE TITLE DISTRO DISTROID KERNELID
+#	export DEFAULT_ADAPTER LOCALIPADD LOCALSUBNET
+#	export OS_INFO OS_RELEASE
 }
 
 # Emits export lines suitable for: eval "$(initialize_env export)"
