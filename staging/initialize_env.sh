@@ -14,6 +14,9 @@ initialize_env() {
 			_initialize_env_vars
 			_initialize_env_show
 			;;
+		export|-e)
++			_initialize_env_export
++			;;
 		*)
 			_initialize_env_vars
 			;;
@@ -81,6 +84,20 @@ _initialize_env_vars() {
 	export OS_INFO OS_RELEASE
 }
 
+# Emits export lines suitable for: eval "$(initialize_env export)"
+_initialize_env_export() {
+	_initialize_env_vars
+	local vars=(
+		BIN_ROOT LIB_ROOT WEB_ROOT DOC_ROOT SHARE_ROOT
+		BACKTITLE TITLE DISTRO DISTROID KERNELID
+		DEFAULT_ADAPTER LOCALIPADD LOCALSUBNET
+		OS_INFO OS_RELEASE
+	)
+	for v in "${vars[@]}"; do
+		# Use indirect expansion to fetch each value; %q for shell-safe quoting
+		printf 'export %s=%q\n' "$v" "${!v-}"
+	done
+}
 
 _initialize_env_show() {
 	# Make sure variables are initialized first

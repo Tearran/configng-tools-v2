@@ -84,7 +84,7 @@ _template_conf() {
 		# Comma-separated list of commands supported by this module (e.g., help,status,reload).
 		options=
 
-		# Main category this module belongs to. Must be one of: network, system, software, locales.
+		# Main category this module belongs to. Must be one of: network, system, software, locales, development.
 		parent=
 
 		# Group or tag for this module. See docs/readme.md (group index) for options.
