@@ -132,7 +132,7 @@ ${MODULE}() {
 		help|-h|--help)
 			_about_${MODULE}
 			;;
-		test|"")
+		"")
 			_${MODULE}_main
 			;;
 		*)
@@ -144,8 +144,8 @@ ${MODULE}() {
 
 _${MODULE}_main() {
 	# TODO: implement module logic
-	echo "${MODULE} - Armbian Config V2 test"
-	echo "Scaffold test"
+	echo "${MODULE} - Armbian Config V2"
+	echo "Scaffold"
 }
 
 _about_${MODULE}() {
@@ -158,8 +158,8 @@ Commands:
 	help        - Show this help message
 
 Examples:
-	# Run the test operation
-	${MODULE} test
+	# Run the operation
+	${MODULE} 
 
 	# Perform the foo operation with an argument
 	${MODULE} foo arg1
@@ -176,21 +176,21 @@ Notes:
 EOF
 }
 
-### START ./${MODULE}.sh - Armbian Config V2 test entrypoint
+### START ./${MODULE}.sh - Armbian Config V2 entrypoint
 
 if [[ "\${BASH_SOURCE[0]}" == "\${0}" ]]; then
 	# --- Capture and assert help output ---
 	help_output="\$(${MODULE} help)"
 	echo "\$help_output" | grep -q "Usage: ${MODULE}" || {
 		echo "fail: Help output does not contain expected usage string"
-		echo "test complete"
+		echo "complete"
 		return 1
 	}
 	# --- end assertion ---
 	${MODULE} "\$@"
 fi
 
-### END ./${MODULE}.sh - Armbian Config V2 test entrypoint
+### END ./${MODULE}.sh - Armbian Config V2  entrypoint
 
 EOH
 }
@@ -206,11 +206,11 @@ Commands:
 			(default: ./staging).
 
 Examples:
-	# Create a scaffold for a module named "testmod"
-	setup_staged_modules testmod
+	# Create a scaffold for a module named "mod"
+	setup_staged_modules mod
 
 	# Create a scaffold using a different staging directory
-	STAGING_DIR=./my_staging setup_staged_modules testmod
+	STAGING_DIR=./my_staging setup_staged_modules mod
 
 	# Show help
 	setup_staged_modules help
@@ -227,19 +227,19 @@ EOF
 
 }
 
-### START ./setup_staged_modules.sh - Armbian Config V2 test entrypoint
+### START ./setup_staged_modules.sh - Armbian Config V2  entrypoint
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 	# --- Capture and assert help output ---
 	help_output="$(setup_staged_modules help)"
 	echo "$help_output" | grep -q "Usage: setup_staged_modules" || {
 		echo "fail: Help output does not contain expected usage string"
-		echo "test complete"
+		echo " complete"
 		return 1
 	}
 	# --- end assertion ---
 	setup_staged_modules "$@"
 fi
 
-### END ./setup_staged_modules.sh - Armbian Config V2 test entrypoint
+### END ./setup_staged_modules.sh - Armbian Config V2  entrypoint
 
