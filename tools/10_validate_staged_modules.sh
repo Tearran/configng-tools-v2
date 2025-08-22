@@ -150,7 +150,7 @@ _check_conf_hold() {
 _check_conf() {
 	# Check for required fields in <modulename>.conf
 	# Edit VALID_PARENTS to change allowed parent categories
-	local VALID_PARENTS=(network system software locales development)
+	local VALID_PARENTS=(core network system software locales development)
 	local REQUIRED_CONF_FIELDS=(feature options helpers description parent group contributor port)
 	local file="$1"
 	local failed=0
