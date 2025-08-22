@@ -26,7 +26,7 @@ _setup_staged_modules_main() {
 	fi
 	if ! [[ "$MODULE" =~ ^[a-zA-Z0-9_]+$ ]]; then
 		echo "Invalid module name: $MODULE"
-		return 1
+		exit 1
 	fi
 
 	# Ensure ./staging exists
@@ -55,8 +55,7 @@ _setup_staged_modules_main() {
 		skipped=$((skipped+1))
 	else
 		_template_sh "$MODULE" > "$modsh"
-		chmod +x "$modsh"
-		echo "Created: $modsh (chmod +x)"
+		echo "Created: $modsh"
 		created=$((created+1))
 	fi
 
@@ -127,8 +126,9 @@ _template_sh() {
 set -euo pipefail
 
 # ./${MODULE}.sh - Armbian Config V2 module
+
 ${MODULE}() {
-	case "${1:-}" in
+	case "\${1:-}" in
 		help|-h|--help)
 			_about_${MODULE}
 			;;
@@ -136,18 +136,15 @@ ${MODULE}() {
 			_${MODULE}_main
 			;;
 		*)
-			echo "Unknown command: ${1}" >&2
+			echo "Unknown command: \${1}"
 			_about_${MODULE}
-			return 1
 	esac
-}
-EOH
 }
 
 _${MODULE}_main() {
 	# TODO: implement module logic
-	echo "${MODULE} - Armbian Config V2"
-	echo "Scaffold"
+	echo "${MODULE} - Armbian Config V2 test"
+	echo "Scaffold test"
 }
 
 _about_${MODULE}() {
@@ -160,8 +157,8 @@ Commands:
 	help        - Show this help message
 
 Examples:
-	# Run the operation
-	${MODULE} 
+	# Run the test operation
+	${MODULE} test
 
 	# Perform the foo operation with an argument
 	${MODULE} foo arg1
@@ -178,21 +175,21 @@ Notes:
 EOF
 }
 
-### START ./${MODULE}.sh - Armbian Config V2 entrypoint
+### START ./${MODULE}.sh - Armbian Config V2 test entrypoint
 
 if [[ "\${BASH_SOURCE[0]}" == "\${0}" ]]; then
 	# --- Capture and assert help output ---
 	help_output="\$(${MODULE} help)"
 	echo "\$help_output" | grep -q "Usage: ${MODULE}" || {
 		echo "fail: Help output does not contain expected usage string"
-		echo "complete"
+		echo "test complete"
 		exit 1
 	}
 	# --- end assertion ---
 	${MODULE} "\$@"
 fi
 
-### END ./${MODULE}.sh - Armbian Config V2  entrypoint
+### END ./${MODULE}.sh - Armbian Config V2 test entrypoint
 
 EOH
 }
@@ -208,11 +205,11 @@ Commands:
 			(default: ./staging).
 
 Examples:
-	# Create a scaffold for a module named "mod"
-	setup_staged_modules mod
+	# Create a scaffold for a module named "testmod"
+	setup_staged_modules testmod
 
 	# Create a scaffold using a different staging directory
-	STAGING_DIR=./my_staging setup_staged_modules mod
+	STAGING_DIR=./my_staging setup_staged_modules testmod
 
 	# Show help
 	setup_staged_modules help
@@ -229,19 +226,19 @@ EOF
 
 }
 
-### START ./setup_staged_modules.sh - Armbian Config V2  entrypoint
+### START ./setup_staged_modules.sh - Armbian Config V2 test entrypoint
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 	# --- Capture and assert help output ---
 	help_output="$(setup_staged_modules help)"
 	echo "$help_output" | grep -q "Usage: setup_staged_modules" || {
 		echo "fail: Help output does not contain expected usage string"
-		echo " complete"
+		echo "test complete"
 		exit 1
 	}
 	# --- end assertion ---
 	setup_staged_modules "$@"
 fi
 
-### END ./setup_staged_modules.sh - Armbian Config V2  entrypoint
+### END ./setup_staged_modules.sh - Armbian Config V2 test entrypoint
 
