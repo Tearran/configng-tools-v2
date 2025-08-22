@@ -1,0 +1,19 @@
+name: 99 ClamAV Scan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  clamav:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ClamAV
+        run: sudo apt-get update && sudo apt-get install -y clamav
+      - name: Stop ClamAV Freshclam Daemon
+        run: sudo systemctl stop clamav-freshclam || true
+      - name: Update ClamAV database
+        run: sudo freshclam --stdout
+      - name: Scan for viruses
+        run: clamscan -r --bell -i .

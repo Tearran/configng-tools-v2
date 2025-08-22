@@ -1,0 +1,46 @@
+name: 04 Main Gate
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'staging/**'
+      - 'tools/**'
+
+jobs:
+  main-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fail if staging folder is missing or empty
+        run: |
+          if [ ! -d staging ] || [ -z "$(ls -A staging)" ]; then
+          	echo "::error ::staging folder is missing or empty. Please add or update at least one module."
+          	exit 1
+          fi
+
+      - name: Run numbered tools in order
+        run: |
+          shopt -s nullglob
+          status=0
+          tools=(tools/[0-9][0-9]_*.sh)
+          if (( ${#tools[@]} == 0 )); then
+            echo "::error ::No runnable tools found under tools/[0-9][0-9]_*.sh"
+            exit 1
+          fi
+          for tool in "${tools[@]}"; do
+            echo "=== Running: $tool ==="
+            bash "$tool"
+            result=$?
+            if [[ $result -eq 0 ]]; then
+              echo "::notice ::PASS: $tool"
+            else
+              echo "::error ::FAIL: $tool (exit code $result)"
+              status=1
+            fi
+            echo
+          done
+          shopt -u nullglob
+          exit $status
