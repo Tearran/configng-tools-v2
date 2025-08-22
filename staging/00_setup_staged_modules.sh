@@ -141,6 +141,7 @@ ${MODULE}() {
 			return 1
 	esac
 }
+EOH
 }
 
 _${MODULE}_main() {
