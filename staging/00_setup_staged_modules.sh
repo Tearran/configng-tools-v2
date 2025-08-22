@@ -55,7 +55,8 @@ _setup_staged_modules_main() {
 		skipped=$((skipped+1))
 	else
 		_template_sh "$MODULE" > "$modsh"
-		echo "Created: $modsh"
+		chmod +x "$modsh"
+		echo "Created: $modsh (chmod +x)"
 		created=$((created+1))
 	fi
 
@@ -126,19 +127,19 @@ _template_sh() {
 set -euo pipefail
 
 # ./${MODULE}.sh - Armbian Config V2 module
-
 ${MODULE}() {
-	case "\${1:-}" in
+	case "${1:-}" in
 		help|-h|--help)
 			_about_${MODULE}
 			;;
-		"")
+		test|"")
 			_${MODULE}_main
 			;;
 		*)
-			echo "Unknown command: \${1}"
+			echo "Unknown command: ${1}" >&2
 			_about_${MODULE}
 	esac
+}
 }
 
 _${MODULE}_main() {

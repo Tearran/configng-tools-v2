@@ -39,15 +39,15 @@ jobs:
            if [[ -n "${{ steps.changed-files.outputs.all_changed_files }}" ]]; then
                FILES="${{ steps.changed-files.outputs.all_changed_files }}"
                for file in $FILES; do
-                   if grep -qE "^#\!/.*bash" $file; then
-                       shellcheck --severity=error $file || ret=$?
+                   if grep -qE "^#\!/.*bash" "$file"; then
+                       shellcheck --severity=error "$file" || ret=$?
                    fi
                done
            else
                FILES="$(find . -name "*.sh" ! -path '*/.git*/*' -exec grep -Iq . {} \; -print)"
                for file in $FILES; do
                    if grep -qE "^#\!/.*bash" $file; then
-                       shellcheck --severity=error $file || ret=$?
+                       shellcheck --severity=error "$file" || ret=$?
                    fi
                done
            fi

@@ -254,7 +254,7 @@ _check_duplicate_anywhere() {
 	local scanned=0
 
 	# Directories to scan for duplicates (add more if needed)
-	local dirs=(./src)
+	local dirs=(./src ./tools)
 
 	for dir in "${dirs[@]}"; do
 		# Skip directories that don't exist to avoid 'find' errors on first run
