@@ -184,7 +184,7 @@ if [[ "\${BASH_SOURCE[0]}" == "\${0}" ]]; then
 	echo "\$help_output" | grep -q "Usage: ${MODULE}" || {
 		echo "fail: Help output does not contain expected usage string"
 		echo "complete"
-		return 1
+		exit 1
 	}
 	# --- end assertion ---
 	${MODULE} "\$@"
@@ -235,7 +235,7 @@ if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 	echo "$help_output" | grep -q "Usage: setup_staged_modules" || {
 		echo "fail: Help output does not contain expected usage string"
 		echo " complete"
-		return 1
+		exit 1
 	}
 	# --- end assertion ---
 	setup_staged_modules "$@"
