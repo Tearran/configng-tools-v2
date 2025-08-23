@@ -2,12 +2,9 @@
 set -euo pipefail
 
 # ./promote_staged_module.sh - Armbian Config V2 module
-# Configure where development-parent modules should be promoted.
-# Default: ./tools
-# You may set DEVELOPMENT_DEST in the environment to override, e.g.:
-#   DEVELOPMENT_DEST=./workflow ./promote_staged_module.sh
-DEVELOPMENT_DEST="${DEVELOPMENT_DEST:-./tools}"
-
+# When a module's parent=development it is promoted to /src/development[/<group>].
+# For other parents the module is promoted to ./src/<parent>[/<group>].
+# Default behavior no longer uses DEVELOPMENT_DEST.
 promote_staged_module() {
 	case "${1:-}" in
 		help|-h|--help)
@@ -39,13 +36,15 @@ _promote_staged_module_main() {
 				exit 1
 			fi
 
-			# If parent=development, promote to DEVELOPMENT_DEST (configurable).
+			# If parent=development, promote to /src/development[/<group>].
 			# Otherwise promote to ./src/<parent>[/<group>]
 			if [[ "$parent" == "development" ]]; then
 				if [[ -n "$group" ]]; then
-					echo "INFO: parent=development does not use 'group'; ignoring group='$group'"
+					dest_dir="./src/development/${group}"
+				else
+					echo "INFO: parent=development and no group specified; promoting to /src/development"
+					dest_dir="./src/development"
 				fi
-				dest_dir="$DEVELOPMENT_DEST"
 			else
 				if [[ -n "$group" ]]; then
 					dest_dir="./src/${parent}/${group}"
@@ -98,9 +97,7 @@ Commands:
 
 Notes:
 	- If the module .conf contains parent=development the module is promoted
-	  to the directory specified by DEVELOPMENT_DEST (default: ./tools). You can
-	  set DEVELOPMENT_DEST in the environment to change this, e.g.:
-	    DEVELOPMENT_DEST=./workflow ./promote_staged_module.sh
+	  to /src/development[/<group>] (if group is set it becomes /src/development/<group>).
 	- For other parents the module is promoted to ./src/<parent>[/<group>].
 	- Destination directories are created with mkdir -p if they don't exist.
 	- Promotion aborts if a file with the same name already exists at the destination.

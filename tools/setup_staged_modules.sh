@@ -11,6 +11,7 @@ setup_staged_modules() {
 		*)
 			_setup_staged_modules_main "$@"
 			;;
+
 	esac
 }
 
