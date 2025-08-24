@@ -9,7 +9,7 @@ web_kit() {
 			;;
 		server|-s)
 			shift 1
-			_web_kit_server_py "${1:-${WEB_ROOT:-}}"
+			_web_kit_server_py "${1:-${PUBLIC_HTML:-}}"
 			;;
 		icons|-i)
 			shift 1
@@ -19,13 +19,13 @@ web_kit() {
 			;;
 		json|-j)
 			shift 1
-			_web_kit_contributors_json "${1:-Tearran}" "${2:-configng-v2}" "${3:-${WEB_JSON_ROOT:-$WEB_ROOT/json}/contributors/configng-v2.json}"
+			_web_kit_contributors_json "${1:-Tearran}" "${2:-configng-v2}" "${3:-${WEB_JSON_ROOT:-$PUBLIC_HTML/json}/contributors/configng-v2.json}"
 			_web_kit_logo_json
 			;;
 		pages|-p)
 			shift 1
-			_web_kit_contrib_page "$WEB_ROOT/contributors.html"
-			_web_kit_images_page "$WEB_ROOT/images.html"
+			_web_kit_contrib_page "$PUBLIC_HTML/contributors.html"
+			_web_kit_images_page "$PUBLIC_HTML/images.html"
 			;;
 		build|-b)
 			shift 1
@@ -40,10 +40,10 @@ web_kit() {
 			#_web_kit_contributors_json "${1:-armbian}" "${2:-build}"
 			_web_kit_contributors_json "${1:-armbian}" "${2:-documentation}"
 
-			_web_kit_contrib_page "$WEB_ROOT/contributors.html"
-			_web_kit_images_page "$WEB_ROOT/images.html"
+			_web_kit_contrib_page "$PUBLIC_HTML/contributors.html"
+			_web_kit_images_page "$PUBLIC_HTML/images.html"
 			# run the test web server
-			_web_kit_server_py "${WEB_ROOT:-}"
+			_web_kit_server_py "${PUBLIC_HTML:-}"
 			;;
 		*)
 			_about_web_kit
@@ -51,15 +51,15 @@ web_kit() {
 	esac
 }
 
-# Writes a single combined JSON file at ${WEB_JSON_ROOT:-$WEB_ROOT/json}/images/logo.json
+# Writes a single combined JSON file at ${WEB_JSON_ROOT:-$PUBLIC_HTML/json}/images/logo.json
 # Usage: call _web_kit_logo_json (no args) or set env vars:
-#   WEB_ROOT, WEB_JSON_ROOT, SVG_SRC_DIR, LOGO_IMG_ROOT, LOGO_IMG_WEB, ICON_SIZES
+#   PUBLIC_HTML, WEB_JSON_ROOT, SVG_SRC_DIR, LOGO_IMG_ROOT, LOGO_IMG_WEB, ICON_SIZES
 _web_kit_logo_json() {
 
-	local WEB_ROOT="${WEB_ROOT:-$BIN_ROOT/../public_html}"
-	local WEB_JSON_ROOT="${WEB_JSON_ROOT:-$WEB_ROOT/json}"
+	local PUBLIC_HTML="${PUBLIC_HTML:-$BIN_ROOT/../public_html}"
+	local WEB_JSON_ROOT="${WEB_JSON_ROOT:-$PUBLIC_HTML/json}"
 	local SVG_SRC_DIR="${SVG_SRC_DIR:-$BIN_ROOT/../assets/images/logos}"   # filesystem source SVGs
-	local LOGO_IMG_ROOT="${LOGO_IMG_ROOT:-$WEB_ROOT/images}"              # filesystem PNG root
+	local LOGO_IMG_ROOT="${LOGO_IMG_ROOT:-$PUBLIC_HTML/images}"              # filesystem PNG root
 	local LOGO_IMG_WEB="${LOGO_IMG_WEB:-images/logos}"                    # desired web prefix (normalized)
 	local LOGO_JSON_OUT="${LOGO_JSON_OUT:-${WEB_JSON_ROOT}/images/logo.json}" # combined output file
 
@@ -68,10 +68,10 @@ _web_kit_logo_json() {
 		LOGO_IMG_WEB="${WEB_LOGO_ROOT}"
 	fi
 
-	# Normalize LOGO_IMG_WEB: strip filesystem WEB_ROOT prefix and any leading slash/./
+	# Normalize LOGO_IMG_WEB: strip filesystem PUBLIC_HTML prefix and any leading slash/./
 	LOGO_IMG_WEB="${LOGO_IMG_WEB%/}"
-	if [[ -n "$WEB_ROOT" && "${LOGO_IMG_WEB#"$WEB_ROOT"/}" != "$LOGO_IMG_WEB" ]]; then
-		LOGO_IMG_WEB="${LOGO_IMG_WEB#"$WEB_ROOT"/}"
+	if [[ -n "$PUBLIC_HTML" && "${LOGO_IMG_WEB#"$PUBLIC_HTML"/}" != "$LOGO_IMG_WEB" ]]; then
+		LOGO_IMG_WEB="${LOGO_IMG_WEB#"$PUBLIC_HTML"/}"
 	fi
 	LOGO_IMG_WEB="${LOGO_IMG_WEB#/}"
 	LOGO_IMG_WEB="${LOGO_IMG_WEB#./}"
@@ -202,9 +202,9 @@ _web_kit_logo_json() {
 _web_kit_images_page() {
 
 
-local WEB_JSON_ROOT="${WEB_JSON_ROOT:-$WEB_ROOT/json}"
+local WEB_JSON_ROOT="${WEB_JSON_ROOT:-$PUBLIC_HTML/json}"
 
-local OUTFILE="${1:-${WEB_ROOT}/images.html}"
+local OUTFILE="${1:-${PUBLIC_HTML}/images.html}"
 mkdir -p "$(dirname "$OUTFILE")"
 
 # Write page header and UI (literal here-doc keeps JS template literals intact)
@@ -548,7 +548,7 @@ echo "Images page written to $OUTFILE"
 
 _web_kit_server_py() {
 
-	local root="${1:-${WEB_ROOT:-}}"
+	local root="${1:-${PUBLIC_HTML:-}}"
 	local port="${WEB_PORT:-8080}"
 
 	if ! command -v python3 >/dev/null 2>&1; then
@@ -558,7 +558,7 @@ _web_kit_server_py() {
 
 	if [[ -z "${root}" ]]; then
 		_about_web_kit
-		echo "Web root directory is not set. Provide a path or set WEB_ROOT."
+		echo "Web root directory is not set. Provide a path or set PUBLIC_HTML."
 		exit 1
 	fi
 
@@ -616,7 +616,7 @@ _web_kit_contributors_json() {
 	local REPO="${2:-configng-v2}"
 	local MIN_COMMITS=1   # Default minimum commits
 
-	local json_root="${WEB_JSON_ROOT:-${WEB_ROOT:-./}/json}"
+	local json_root="${WEB_JSON_ROOT:-${PUBLIC_HTML:-./}/json}"
 	mkdir -p "${json_root}/contributors/"
 
 	local OUTFILE="${3:-${json_root}/contributors/${REPO}.json}"
@@ -637,7 +637,7 @@ _web_kit_contributors_json() {
 }
 
 _web_kit_contrib_page() {
-local OUTFILE="${1:-$WEB_ROOT/contributors.html}"
+local OUTFILE="${1:-$PUBLIC_HTML/contributors.html}"
 mkdir -p "$(dirname "$OUTFILE")"
 
 cat <<'EOF' > "$OUTFILE"
@@ -777,7 +777,7 @@ margin-right: 0.5rem;
 
 <body>
 <main>
-<h1>Armbian Top Contributors</h1>
+<h1>Cofigurartion Next Generation Contributors</h1>
 <p>Contributors with more than 10 commits to the Armbian projects.</p>
 
 <div class="controls">
@@ -822,7 +822,7 @@ for f in "$WEB_JSON_ROOT"/contributors/*.json; do
 	# Use smaller icons for particular files (adjust as needed)
 	icon_size="false"
 	[[ "$fname" == "build-scripts.json" ]] && icon_size="true"
-	# JSON file path, relative to the HTML page (WEB_ROOT/contributors.html -> json/contributors/<file>)
+	# JSON file path, relative to the HTML page (PUBLIC_HTML/contributors.html -> json/contributors/<file>)
 	echo "    { title: '$title', file: 'json/contributors/$fname', small: $icon_size }," >> "$OUTFILE"
 done
 
@@ -1030,15 +1030,15 @@ _web_kit_icon_set() {
 	fi
 
 	if [[ -f "$FAVICON_SVG" ]]; then
-		local tmp16="${WEB_ROOT}/favicon-16.png"
-		local tmp32="${WEB_ROOT}/favicon-32.png"
-		local tmp48="${WEB_ROOT}/favicon-48.png"
+		local tmp16="${PUBLIC_HTML}/favicon-16.png"
+		local tmp32="${PUBLIC_HTML}/favicon-32.png"
+		local tmp48="${PUBLIC_HTML}/favicon-48.png"
 		$IM -background none "$FAVICON_SVG" -resize 16x16 "$tmp16"
 		$IM -background none "$FAVICON_SVG" -resize 32x32 "$tmp32"
 		$IM -background none "$FAVICON_SVG" -resize 48x48 "$tmp48"
-		$IM "$tmp16" "$tmp32" "$tmp48" "${WEB_ROOT}/favicon.ico"
+		$IM "$tmp16" "$tmp32" "$tmp48" "${PUBLIC_HTML}/favicon.ico"
 		rm -f "$tmp16" "$tmp32" "$tmp48"
-		echo "Favicon generated at ${WEB_ROOT}/favicon.ico"
+		echo "Favicon generated at ${PUBLIC_HTML}/favicon.ico"
 	else
 		echo "No SVG found for favicon in ${SRC_DIR} (looked for armbian_social.svg or any .svg). Skipping favicon."
 	fi
@@ -1066,7 +1066,7 @@ Environment:
 	ICON_SIZES                 Comma-separated list of sizes. Default:
 				16,32,48,64,96,128,180,192,256,384,512,1024
 	SVG_LOGO_ROOT             (defaults to \$BIN_ROOT/../assets/images/logos)
-	WEB_LOGO_ROOT             (defaults to \$WEB_ROOT/images/logos)
+	WEB_LOGO_ROOT             (defaults to \$PUBLIC_HTML/images/logos)
 
 Examples:
 	# Run server in a specific directory
@@ -1105,13 +1105,12 @@ EOF
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
 
 	BIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-	DOC_ROOT="${DOC_ROOT:-$BIN_ROOT/../doc}"
 	SVG_LOGO_ROOT="${SVG_ROOT:-$BIN_ROOT/../assets/images/logos}"
 
-	WEB_ROOT="${WEB_ROOT:-$BIN_ROOT/../public_html}"
-	WEB_JSON_ROOT="${WEB_JSON_ROOT:-$WEB_ROOT/json}"
-	WEB_DOC_ROOT="${WEB_DOC_ROOT:-$WEB_ROOT/doc}"
-	WEB_LOGO_ROOT="${WEB_LOGO_ROOT:-$WEB_ROOT/images/logos}"
+	PUBLIC_HTML="${PUBLIC_HTML:-$BIN_ROOT/../public_html}"
+	WEB_JSON_ROOT="${WEB_JSON_ROOT:-$PUBLIC_HTML/json}"
+	WEB_DOC_ROOT="${WEB_DOC_ROOT:-$PUBLIC_HTML/doc}"
+	WEB_LOGO_ROOT="${WEB_LOGO_ROOT:-$PUBLIC_HTML/images/logos}"
 
 	# --- Capture and assert help output ---
 	help_output="$(web_kit help)"
