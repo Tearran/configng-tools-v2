@@ -61,6 +61,7 @@ _init_vars_main() {
 	# Legacy / runtime variables (OS info)
 	DISTRO="${ID:-Unknown}"
 	DISTROID="${VERSION_CODENAME:-Unknown}"
+	ARCHID=$(uname -m)
 	KERNELID="$(uname -r)"
 	HOSTNAME="$(hostname)"
 
@@ -127,6 +128,7 @@ _show_vars() {
 	echo "TITLE=\"${TITLE}\""
 	echo "DISTRO=\"${DISTRO}\""
 	echo "DISTROID=\"${DISTROID}\""
+	echo "ARCHID=\"${ARCHID}\""
 	echo "KERNELID=\"${KERNELID}\""
 	echo "HOSTNAME=\"${HOSTNAME}\""
 	echo "DEFAULT_ADAPTER=\"${DEFAULT_ADAPTER}\""

@@ -70,6 +70,7 @@ EOF
                         eval "$BIN_ROOT"/staging/promote_staged_module.sh "$@"
                         ;;
                 *)
+                        
                         trace "Run <${1:-} ${2:-}>"
                         eval "$@"
                         ;;
