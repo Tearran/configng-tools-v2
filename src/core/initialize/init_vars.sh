@@ -37,10 +37,6 @@ _init_vars_main() {
 	# shellcheck disable=SC1091
 	[[ -r "$OS_RELEASE" ]] && source "$OS_RELEASE" || true
 
-	# ==== CORE PATH RESOLUTION ====
-	BIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
-	PROJECT_ROOT="$(cd "${BIN_ROOT}/.." && pwd)"
-
 	# Read version from file if available (overrides hardcoded version)
 	[[ -f "${PROJECT_ROOT}/VERSION" ]] && PROJECT_VERSION="$(cat "${PROJECT_ROOT}/VERSION")"
 
@@ -65,6 +61,7 @@ _init_vars_main() {
 	# Legacy / runtime variables (OS info)
 	DISTRO="${ID:-Unknown}"
 	DISTROID="${VERSION_CODENAME:-Unknown}"
+	ARCHID=$(uname -m)
 	KERNELID="$(uname -r)"
 	HOSTNAME="$(hostname)"
 
@@ -131,6 +128,7 @@ _show_vars() {
 	echo "TITLE=\"${TITLE}\""
 	echo "DISTRO=\"${DISTRO}\""
 	echo "DISTROID=\"${DISTROID}\""
+	echo "ARCHID=\"${ARCHID}\""
 	echo "KERNELID=\"${KERNELID}\""
 	echo "HOSTNAME=\"${HOSTNAME}\""
 	echo "DEFAULT_ADAPTER=\"${DEFAULT_ADAPTER}\""

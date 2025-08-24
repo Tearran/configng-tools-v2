@@ -40,16 +40,16 @@ _promote_staged_module_main() {
 			# Otherwise promote to ./src/<parent>[/<group>]
 			if [[ "$parent" == "development" ]]; then
 				if [[ -n "$group" ]]; then
-					dest_dir="./src/development/${group}"
+					dest_dir="./tools/${group}"
 				else
 					echo "INFO: parent=development and no group specified; promoting to /src/development"
-					dest_dir="./src/development"
+					dest_dir="./tools/misc"
 				fi
 			else
 				if [[ -n "$group" ]]; then
 					dest_dir="./src/${parent}/${group}"
 				else
-					dest_dir="./src/${parent}"
+					dest_dir="./src/${parent}/failed"
 				fi
 			fi
 
