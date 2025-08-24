@@ -1,83 +1,99 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# configng_v2 - Armbian Config V2 Entry Point
-
-BIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
+BIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${BIN_ROOT}/.." && pwd)"
 
+### DEV-BLOCK START (remove for production)
+if [[ "$BIN_ROOT" == */tools ]]; then
+        # Development environment logic
+        if [[ -f "$PROJECT_ROOT/src/core/initialize/trace.sh" ]]; then
+                . "$PROJECT_ROOT/src/core/initialize/trace.sh"
+                TRACE=y
+                trace reset
+        fi
+        # Load initialize scripts
+        shopt -s nullglob
+        for f in "$PROJECT_ROOT/src/core/initialize"/*.sh; do
 
-_about_armbian_config(){
-        cat <<EOF
-Usage: armbian-config [help]
-        help - this mesage
-        show - show the projct varible
-EOF
-}
-
-
-### START dev env
-if [[ "${BIN_ROOT}" == */tools && -d "$PROJECT_ROOT/src" ]]; then
-
-        TRACE=${TRACE:-foo} # any value will show a debug trace message
-        # load trace module
-        . "$PROJECT_ROOT"/src/core/initialize/trace.sh
-        # Define directories to source files from
-        allowed_directories=("initialize")
-
-        # Loop through each directory
-        for dir in "${allowed_directories[@]}"; do
-                trace "Processing directory: $dir"
-                # Source all shell files in this directory
-                for init_file in "$PROJECT_ROOT/src/core/$dir"/*.sh; do
-                        if [[ -f "$init_file" ]]; then
-                        trace "Sourcing $(basename "$init_file")"
-                        . "$init_file"
-                        fi
-                done
+                [[ -f "$f" ]] && source "$f" ; trace "$f";
         done
-        trace reset
-        trace "Loading modules"
 
-
-        init_vars
-        if [[ ! -f "$OS_RELEASE" ]]; then
-                # Display warning
-                echo -e "Warning, failed to detect Armbian."
+        # Initialize vars if function exists
+        if declare -f init_vars >/dev/null 2>&1; then
+                eval "$(init_vars show 2>/dev/null || true)"
         fi
 
-	case "${1:-}" in
-		help|-h|--help)
-			_about_armbian_config
-			;;
-                show)
-                        init_vars show
+        if [[ ! -f "${OS_RELEASE:-/etc/os-release}" ]]; then
+                echo "Warning: failed to detect Armbian (os-release file missing: ${OS_RELEASE:-/etc/os-release})."
+        fi
+
+        case "${1:-}" in
+                help|-h|--help|"")
+                        cat <<EOF
+Usage: armbian-config <command>
+
+Commands:
+        help   - Show this help message
+        start  - Generate a scaffold script and metadata
+        valid  - Validate metadate and module scripts for promotion
+        promote - After validation can moves to production src/ folder
+
+examples
+        armbian-config start <string>
+        armbian-config valid
+        armbian-config promote
+
+
+EOF
                         ;;
-                "")
-                        _about_armbian_config
-                ;;
-		*)
-			echo "Unknown command: $1"
-			_about_validate_staged_modules
-			exit 1
-			;;
-
-	esac
-
-else 
-        echo "Modules not found"
-
+                web)
+                        shift
+                        if [[ -f "$BIN_ROOT/release/web_kit.sh" ]]; then
+                                . "$BIN_ROOT/release/web_kit.sh"
+                                web_kit "$@"
+                        else
+                                echo "web_kit not found: $BIN_ROOT/release/web_kit.sh" >&2
+                                exit 1
+                        fi
+                        ;;
+                start)  
+                        shift 
+                        eval "$BIN_ROOT"/staging/setup_staged_modules.sh "$@"
+                        ;;
+                valid)
+                        shift
+                        eval "$BIN_ROOT"/staging/validate_staged_modules.sh "$@"
+                        ;;
+                promote)
+                        shift
+                        eval "$BIN_ROOT"/staging/promote_staged_module.sh "$@"
+                        ;;
+                *)
+                        trace "Run <${1:-} ${2:-}>"
+                        eval "$@"
+                        ;;
+        esac
+trace total
 fi
-### END dev env
+### DEV-BLOCK END
 
+
+# Production loader triggers ONLY when script resides in bin/ or sbin/.
 ### START main
-if [[ (("${BIN_ROOT}" == */bin) || ("${BIN_ROOT}" == */sbin)) && -d "$PROJECT_ROOT/lib" ]]; then
+if [[ "$BIN_ROOT" == */bin || "$BIN_ROOT" == */sbin ]]; then
+        if [[ -d "$PROJECT_ROOT/lib/armbian-config/" ]]; then
+                . "$PROJECT_ROOT/lib/armbian-config/core.sh"
+        else
+                echo "Error: Library not found $PROJECT_ROOT/lib/armbian-config/" >&2
+                exit 1
+        fi
 
-        # Running in production environment
-        . "$PROJECT_ROOT"/src/core/initialize/trace.sh
-
-
+       case "${1:-}" in
+                *)
+                        eval "$@"
+                        ;;
+        esac
 fi
-### END main
 
-# Common code for both environments goes here
+### END main

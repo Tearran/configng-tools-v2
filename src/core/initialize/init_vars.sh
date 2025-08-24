@@ -37,10 +37,6 @@ _init_vars_main() {
 	# shellcheck disable=SC1091
 	[[ -r "$OS_RELEASE" ]] && source "$OS_RELEASE" || true
 
-	# ==== CORE PATH RESOLUTION ====
-	BIN_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" 
-	PROJECT_ROOT="$(cd "${BIN_ROOT}/.." && pwd)"
-
 	# Read version from file if available (overrides hardcoded version)
 	[[ -f "${PROJECT_ROOT}/VERSION" ]] && PROJECT_VERSION="$(cat "${PROJECT_ROOT}/VERSION")"
 
