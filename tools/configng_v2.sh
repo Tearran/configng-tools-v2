@@ -34,40 +34,33 @@ if [[ "$BIN_ROOT" == */tools ]]; then
 Usage: armbian-config <command>
 
 Commands:
-        help   - Show this help message
-        start  - Generate a scaffold script and metadata
-        valid  - Validate metadate and module scripts for promotion
-        promote - After validation can moves to production src/ folder
+        help    - Show this help message
+        start   - Generate a scaffold script and metadata
+        valid   - Validate metadata and module scripts for promotion  
+        promote - After validation, move modules to the production src/ folder 
 
 examples
         armbian-config start <string>
         armbian-config valid
         armbian-config promote
 
-
 EOF
                         ;;
                 web)
                         shift
-                        if [[ -f "$BIN_ROOT/release/web_kit.sh" ]]; then
-                                . "$BIN_ROOT/release/web_kit.sh"
-                                web_kit "$@"
-                        else
-                                echo "web_kit not found: $BIN_ROOT/release/web_kit.sh" >&2
-                                exit 1
-                        fi
+                        "$BIN_ROOT/release/web_kit.sh"
                         ;;
                 start)  
                         shift 
-                        eval "$BIN_ROOT"/staging/setup_staged_modules.sh "$@"
+                        "$BIN_ROOT"/staging/setup_staged_modules.sh "$@"
                         ;;
                 valid)
                         shift
-                        eval "$BIN_ROOT"/staging/validate_staged_modules.sh "$@"
+                        "$BIN_ROOT"/staging/validate_staged_modules.sh "$@"
                         ;;
                 promote)
                         shift
-                        eval "$BIN_ROOT"/staging/promote_staged_module.sh "$@"
+                        "$BIN_ROOT"/staging/promote_staged_module.sh "$@"
                         ;;
                 *)
                         
@@ -92,7 +85,7 @@ if [[ "$BIN_ROOT" == */bin || "$BIN_ROOT" == */sbin ]]; then
 
        case "${1:-}" in
                 *)
-                        eval "$@"
+                        "$@"
                         ;;
         esac
 fi
