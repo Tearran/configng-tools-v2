@@ -167,15 +167,23 @@ json_set() {
 		contrib|-c)
 			shift
 			_json_set_contributors "${1:-Tearran}" "${2:-configng-tools-v2}"
-			_json_set_contributors "${1:-armbian}" "${2:-configng}"
-			_json_set_contributors "${1:-armbian}" "${2:-config}"
-			#_json_set_contributors "${1:-armbian}" "${2:-documentation}"
-			#_json_set_contributors "${1:-armbian}" "${2:-build}"
 			;;
 		images|-i)
 			shift
 			_json_set_images "${1:-$PROJECT_ROOT/assets/images/logos}" "${2:-$PROJECT_ROOT/public_html/json/images/logos.json}"
-		;;
+			;;
+		armbian-config|-a)
+			shift
+			_json_set_images "${1:-$PROJECT_ROOT/assets/images/logos}" "${2:-$PROJECT_ROOT/public_html/json/images/logos.json}"
+			
+			_json_set_contributors "${1:-Tearran}" "${2:-configng-tools-v2}"
+			_json_set_contributors "${1:-armbian}" "${2:-configng}"
+			_json_set_contributors "${1:-armbian}" "${2:-config}"
+			;;
+		armbian)
+			_json_set_contributors "${1:-armbian}" "${2:-documentation}"
+			_json_set_contributors "${1:-armbian}" "${2:-build}"
+			;;
 		*)
 			echo "Unknown command: ${1}"
 			_about_json_set
