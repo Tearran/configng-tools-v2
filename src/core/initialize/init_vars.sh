@@ -112,7 +112,6 @@ _show_vars() {
 	echo "# Generated environment variables - $(date)"
 	echo "PROJECT_NAME=\"${PROJECT_NAME}\""
 	echo "PROJECT_VERSION=\"${PROJECT_VERSION}\""
-	echo "BIN_ROOT=\"${BIN_ROOT}\""
 	echo "PROJECT_ROOT=\"${PROJECT_ROOT}\""
 	echo "SRC_ROOT=\"${SRC_ROOT}\""
 	echo "LIB_ROOT=\"${LIB_ROOT}\""
