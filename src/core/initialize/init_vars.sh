@@ -5,12 +5,12 @@ set -euo pipefail
 
 init_vars() {
 	case "${1:-}" in
+		help|-h|--help)
+			_about_init_vars
+			;;
 		show)
 			_init_vars_main
 			_show_vars
-			;;
-		help|-h|--help)
-			_about_init_vars
 			;;
 		"")
 			_init_vars_main
@@ -112,7 +112,6 @@ _show_vars() {
 	echo "# Generated environment variables - $(date)"
 	echo "PROJECT_NAME=\"${PROJECT_NAME}\""
 	echo "PROJECT_VERSION=\"${PROJECT_VERSION}\""
-	echo "BIN_ROOT=\"${BIN_ROOT}\""
 	echo "PROJECT_ROOT=\"${PROJECT_ROOT}\""
 	echo "SRC_ROOT=\"${SRC_ROOT}\""
 	echo "LIB_ROOT=\"${LIB_ROOT}\""
@@ -200,6 +199,7 @@ EOF
 ### START ./init_vars.sh - Armbian Config V2 test entrypoint
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+	PROJECT_ROOT=${PROJECT_ROOT:-/../..}
 	# --- Capture and assert help output ---
 	help_output="$(init_vars help)"
 	echo "$help_output" | grep -q "Usage: init_vars" || {
