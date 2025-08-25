@@ -36,7 +36,6 @@ icon_set() {
 				_icon_set_main "${1:-$PROJECT_ROOT/assets/images/logos}" "${2:-$PROJECT_ROOT/share/icons/hicolor/}"
 			fi
 			;;
-
 		*)
 			echo "Unknown command: ${1}"
 			_about_icon_set
