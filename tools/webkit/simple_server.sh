@@ -68,7 +68,11 @@ _simple_server_main() {
 	echo "Starting Python web server in: $(pwd)"
 	echo "Port: ${port}"
 	#python3 -m http.server "${port}" --bind 127.0.0.1 --cgi &
- 	python3 -m http.server 8080 --cgi &
+ 	#python3 -m http.server 8080 --cgi &
+	# Pick first non-localhost IP
+	BIND_IP=$(hostname -I | awk '{print $1}')
+	python3 -m http.server 8080 --cgi --bind "$BIND_IP"
+
 	local PYTHON_PID=$!
 	echo "Python web server started with PID ${PYTHON_PID}"
 	echo "URL: http://localhost:${port}/"

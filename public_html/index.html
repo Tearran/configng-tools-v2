@@ -81,81 +81,7 @@
                         </div>
 
                 </section>
-                <section id="system" class="page-section" aria-hidden="true" hidden>
-                        <div class="card" <h2>System Monitor</h2>
-                                <div id="sys-bars">
-                                        <div id="cpu-bar" class="bar"></div>
-                                        <div id="mem-bar" class="bar"></div>
-                                </div>
-                                <table id="proc-table">
-                                        <thead>
-                                                <tr>
-                                                        <th>PID</th>
-                                                        <th>CPU%</th>
-                                                        <th>MEM%</th>
-                                                        <th>COMMAND</th>
-                                                </tr>
-                                        </thead>
-                                        <tbody id="proc-rows"></tbody>
-                                </table>
-                                <p>Last update: <span id="sys-ts"></span></p>
-                                <script>
-                                        const POLL_MS = 5000; // 1 second
 
-                                        async function fetchSystem() {
-                                                try {
-                                                        const res = await fetch('/cgi-bin/system', { cache: 'no-store' });
-                                                        if (!res.ok) throw new Error(res.statusText);
-                                                        const d = await res.json();
-                                                        renderSystem(d);
-                                                } catch (e) {
-                                                        console.error('System poll failed', e);
-                                                }
-                                        }
-
-                                        function renderSystem(d) {
-                                                // CPU bar
-                                                const cpuBar = document.getElementById('cpu-bar');
-                                                if (cpuBar) {
-                                                        const color = d.cpu <= 50 ? 'green' : d.cpu <= 80 ? 'yellow' : 'red';
-                                                        cpuBar.style.width = d.cpu + '%';
-                                                        cpuBar.style.backgroundColor = color;
-                                                        cpuBar.textContent = 'CPU: ' + d.cpu + '%';
-                                                }
-
-                                                // Memory bar
-                                                const memBar = document.getElementById('mem-bar');
-                                                if (memBar) {
-                                                        const color = d.mem <= 50 ? 'green' : d.mem <= 80 ? 'yellow' : 'red';
-                                                        memBar.style.width = d.mem + '%';
-                                                        memBar.style.backgroundColor = color;
-                                                        memBar.textContent = 'MEM: ' + d.mem + '%';
-                                                }
-
-                                                // Process table
-                                                const tbody = document.getElementById('proc-rows');
-                                                if (tbody && Array.isArray(d.processes)) {
-                                                        tbody.innerHTML = '';
-                                                        d.processes.forEach(p => {
-                                                                const tr = document.createElement('tr');
-                                                                tr.innerHTML = `<td>${p.pid}</td><td>${p.pcpu}</td><td>${p.pmem}</td><td>${p.cmd}</td>`;
-                                                                tbody.appendChild(tr);
-                                                        });
-                                                }
-
-                                                // Timestamp
-                                                const ts = document.getElementById('sys-ts');
-                                                if (ts) ts.textContent = new Date(d.timestamp * 1000).toLocaleTimeString();
-                                        }
-
-                                        // initial fetch & polling
-                                        fetchSystem();
-                                        setInterval(fetchSystem, POLL_MS);
-
-
-                                </script>
-                        </div>
-                </section>
 
                 <section id="info" class="page-section" aria-hidden="true" hidden>
                         <div id="bash-cgi-cards"></div>
@@ -200,9 +126,15 @@
                                                 }).join('\n');
                                                 container.appendChild(createCard('Installed Tools', toolsContent));
 
+
                                                 // Networking
                                                 const netContent = `Hostname/IP: ${data.networking.hostname_ip}\nConnections:\n${data.networking.connections.join('\n')}`;
                                                 container.appendChild(createCard('Networking', netContent));
+
+                                                // MOTD
+                                                if (data.motd && data.motd.length > 0) {
+                                                        container.appendChild(createCard('Message of the Day', data.motd.join('\n')));
+                                                }
 
                                         } catch (err) {
                                                 const container = document.getElementById('bash-cgi-cards');
@@ -235,7 +167,6 @@
         <script src="/js/loader.js"></script>
         <script src="/js/footer.js"></script>
         <script src="/js/contributors.js"></script>
-        <script src="/js/system.js"></script>
 
 </body>
 

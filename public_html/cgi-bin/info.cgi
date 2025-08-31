@@ -5,21 +5,20 @@ echo ""
 # Helpers
 json_array() {
     local arr=("$@")
-    local jq_input
-    jq_input=$(printf '%s\n' "${arr[@]}" | jq -R . | jq -s .)
-    echo "$jq_input"
-}
-
-json_object() {
-    local key="$1"; shift
-    local value="$1"; shift
-    jq -n --arg k "$key" --arg v "$value" '{($k):$v}'
+    jq -n '$ARGS.positional' --args "${arr[@]}"
 }
 
 # System
 system_info=$(uname -a)
+
+# OS Release (Armbian check)
+os_release_file="/etc/os-release"
+if [[ -f /etc/armbian-release ]]; then
+    os_release_file="/etc/armbian-release"
+fi
 os_release=()
-while IFS= read -r line; do os_release+=("$line"); done < /etc/os-release 2>/dev/null
+while IFS= read -r line; do os_release+=("$line"); done < "$os_release_file" 2>/dev/null
+
 uptime_info=$(uptime -p)
 
 # Bash
@@ -52,6 +51,20 @@ hostname_ip=$(hostname -I 2>/dev/null)
 connections=()
 while IFS= read -r line; do connections+=("$line"); done < <(netstat -tunlp 2>/dev/null | head -n 10)
 
+# MOTD
+motd_messages=()
+if [[ -f /etc/armbian-release ]]; then
+    # Armbian dynamic MOTD
+    [[ -f /run/motd.dynamic ]] && while IFS= read -r line; do motd_messages+=("$line"); done < /run/motd.dynamic
+    # Fallback static
+    [[ -f /etc/motd ]] && while IFS= read -r line; do motd_messages+=("$line"); done < /etc/motd
+elif [[ -f /etc/debian_version ]]; then
+    # Debian/Ubuntu dynamic MOTD
+    [[ -f /run/motd.dynamic ]] && while IFS= read -r line; do motd_messages+=("$line"); done < /run/motd.dynamic
+    # Fallback static
+    [[ -f /etc/motd ]] && while IFS= read -r line; do motd_messages+=("$line"); done < /etc/motd
+fi
+
 # Compose JSON safely with jq
 jq -n \
     --arg system "$system_info" \
@@ -66,6 +79,7 @@ jq -n \
     --argjson environment "$(json_array "${env_vars[@]}")" \
     --argjson tools "$tools_json" \
     --argjson connections "$(json_array "${connections[@]}")" \
+    --argjson motd "$(json_array "${motd_messages[@]}")" \
     '{
         system: $system,
         os_release: $os_release,
@@ -74,5 +88,6 @@ jq -n \
         cpu_memory_disk: {cpu: $cpu, memory: $memory, disk: $disk},
         environment: $environment,
         tools: $tools,
-        networking: {hostname_ip: $hostname_ip, connections: $connections}
+        networking: {hostname_ip: $hostname_ip, connections: $connections},
+        motd: $motd
     }'
