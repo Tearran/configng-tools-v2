@@ -1,0 +1,70 @@
+/* Footer base */
+.site-footer {
+        background: var(--footer-inverted);
+        color: var(--text-inverted);
+        padding: 2rem 1rem;
+        font-size: 0.9em;
+        box-shadow: 0 -2px 6px var(--shadow);
+}
+
+/* Footer content wrapper */
+.site-footer .footer-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+}
+
+/* === Row 1: Links === */
+#footer-links {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+}
+
+#footer-links .footer-links {
+        flex: 1 1 200px;
+        /* 3 columns, min-width 200px */
+}
+
+#footer-links h4 {
+        margin-bottom: 0.5rem;
+        font-size: 1em;
+}
+
+#footer-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+}
+
+#footer-links li {
+        margin-bottom: 0.3rem;
+}
+
+#footer-links a {
+        color: var(--ui-accent);
+        text-decoration: none;
+        transition: color 0.2s;
+}
+
+#footer-links a:hover {
+        color: var(--ui-accent-hover);
+}
+
+/* === Row 2: Legal === */
+#footer-legal {
+        width: 100%;
+        font-size: 8px;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: left;
+        margin: 0 auto;
+}
+
+/* === Row 3: About === */
+#footer-about {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+}

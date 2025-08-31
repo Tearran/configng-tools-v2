@@ -167,6 +167,7 @@ json_set() {
 		contrib|-c)
 			shift
 			_json_set_contributors "${1:-Tearran}" "${2:-configng-tools-v2}"
+			_json_set_contributors "${1:-armbian}" "${2:-configng}"
 			;;
 		images|-i)
 			shift

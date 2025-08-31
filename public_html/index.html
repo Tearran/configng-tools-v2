@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Arm pi Tools SPA</title>
+        <meta name="description" content="A hobby FOSS SPA for bash, html, and a simple python3 web server">
+        <meta name="author" content="Tearran (FOSS project)">
+        <meta name="robots" content="index, follow">
+
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+        <meta name="theme-color" content="#0366d6">
+
+        <title>SPA — JSON-driven nav & footer</title>
+        <link rel="stylesheet" href="/css/footer.css">
+        <link rel="stylesheet" href="/css/palette.css">
+        <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+        <header class="site-header">
+                <div class="brand">
+                        <img src="https://raw.githubusercontent.com/Tearran/configng-tools-v2/refs/heads/main/assets/images/logos/configng_mascot_v2.0.svg"
+                                alt="Home" width="64" height="64">
+                        <div class="site-title">
+
+                                <svg width="384" height="64" version="1.1" viewBox="0 0 256 94"
+                                        xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
+                                        xmlns:dc="http://purl.org/dc/elements/1.1/"
+                                        xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+                                        <title>Tools</title>
+                                        <text x="128.59326" y="55.876953" dominant-baseline="middle" fill="#000000"
+                                                font-family="Futura, Arial, sans-serif" font-size="90px"
+                                                font-weight="bold" stroke="#ffffff" stroke-width="2"
+                                                text-anchor="middle" paint-order="stroke">Arm pi Tools</text>
+
+                                </svg>
+                        </div>
+                </div>
+        </header>
+
+        <nav id="site-nav" class="site-nav" role="navigation" aria-label="Main">
+                <div id="nav-container" class="nav-loading">Loading navigation…</div>
+                <noscript>
+                        <div class="nav-fallback">
+                                <p>JavaScript is required to load the navigation from JSON. Provide a static fallback if
+                                        needed.</p>
+                        </div>
+                </noscript>
+        </nav>
+
+        <main class="site-main">
+
+
+                <section id="home" class="page-section" aria-hidden="false" data-active="true">
+                        <div class="card">
+                                <p>Welcome. </p>
+                        </div>
+                </section>
+
+                <section id="about" class="page-section" aria-hidden="true" hidden>
+
+                        <div class="card">
+
+                                <h2>About</h2>
+                                <p>This is a single-page application (SPA) that dynamically loads its navigation
+                                        and footer from JSON files using JavaScript.
+                                </p>
+                                <p>The navigation menu and footer content are defined in separate JSON files, making
+                                        it easy to update or modify them without changing the HTML structure of the
+                                        page.
+                                </p>
+                        </div>
+
+                        <div class="card">
+                                <h3>Contributors</h3>
+
+                                <div id="contributors-container" aria-live="polite">Loading contributors…</div>
+                        </div>
+
+                </section>
+                <section id="system" class="page-section" aria-hidden="true" hidden>
+                        <div class="card" <h2>System Monitor</h2>
+                                <div id="sys-bars">
+                                        <div id="cpu-bar" class="bar"></div>
+                                        <div id="mem-bar" class="bar"></div>
+                                </div>
+                                <table id="proc-table">
+                                        <thead>
+                                                <tr>
+                                                        <th>PID</th>
+                                                        <th>CPU%</th>
+                                                        <th>MEM%</th>
+                                                        <th>COMMAND</th>
+                                                </tr>
+                                        </thead>
+                                        <tbody id="proc-rows"></tbody>
+                                </table>
+                                <p>Last update: <span id="sys-ts"></span></p>
+                                <script>
+                                        const POLL_MS = 5000; // 1 second
+
+                                        async function fetchSystem() {
+                                                try {
+                                                        const res = await fetch('/cgi-bin/system', { cache: 'no-store' });
+                                                        if (!res.ok) throw new Error(res.statusText);
+                                                        const d = await res.json();
+                                                        renderSystem(d);
+                                                } catch (e) {
+                                                        console.error('System poll failed', e);
+                                                }
+                                        }
+
+                                        function renderSystem(d) {
+                                                // CPU bar
+                                                const cpuBar = document.getElementById('cpu-bar');
+                                                if (cpuBar) {
+                                                        const color = d.cpu <= 50 ? 'green' : d.cpu <= 80 ? 'yellow' : 'red';
+                                                        cpuBar.style.width = d.cpu + '%';
+                                                        cpuBar.style.backgroundColor = color;
+                                                        cpuBar.textContent = 'CPU: ' + d.cpu + '%';
+                                                }
+
+                                                // Memory bar
+                                                const memBar = document.getElementById('mem-bar');
+                                                if (memBar) {
+                                                        const color = d.mem <= 50 ? 'green' : d.mem <= 80 ? 'yellow' : 'red';
+                                                        memBar.style.width = d.mem + '%';
+                                                        memBar.style.backgroundColor = color;
+                                                        memBar.textContent = 'MEM: ' + d.mem + '%';
+                                                }
+
+                                                // Process table
+                                                const tbody = document.getElementById('proc-rows');
+                                                if (tbody && Array.isArray(d.processes)) {
+                                                        tbody.innerHTML = '';
+                                                        d.processes.forEach(p => {
+                                                                const tr = document.createElement('tr');
+                                                                tr.innerHTML = `<td>${p.pid}</td><td>${p.pcpu}</td><td>${p.pmem}</td><td>${p.cmd}</td>`;
+                                                                tbody.appendChild(tr);
+                                                        });
+                                                }
+
+                                                // Timestamp
+                                                const ts = document.getElementById('sys-ts');
+                                                if (ts) ts.textContent = new Date(d.timestamp * 1000).toLocaleTimeString();
+                                        }
+
+                                        // initial fetch & polling
+                                        fetchSystem();
+                                        setInterval(fetchSystem, POLL_MS);
+
+
+                                </script>
+                        </div>
+                </section>
+
+                <section id="info" class="page-section" aria-hidden="true" hidden>
+                        <div id="bash-cgi-cards"></div>
+
+                        <script>
+                                async function fetchBashCgiInfo() {
+                                        try {
+                                                const res = await fetch('/cgi-bin/info.cgi', { cache: 'no-store' });
+                                                if (!res.ok) throw new Error('HTTP ' + res.status);
+                                                const data = await res.json();
+
+                                                const container = document.getElementById('bash-cgi-cards');
+                                                container.innerHTML = ''; // clear previous
+
+                                                function createCard(title, content) {
+                                                        const div = document.createElement('div');
+                                                        div.className = 'card';
+                                                        div.innerHTML = `<h2>${title}</h2><pre>${content}</pre>`;
+                                                        return div;
+                                                }
+
+                                                // System
+                                                container.appendChild(createCard('System', `System: ${data.system}\nUptime: ${data.uptime}`));
+                                                container.appendChild(createCard('OS Release', data.os_release.join('\n')));
+
+                                                // Bash / Shell
+                                                container.appendChild(createCard('Bash Version', data.bash.version));
+                                                container.appendChild(createCard('Shells', data.bash.shells.join('\n')));
+
+                                                // CPU / Memory / Disk
+                                                container.appendChild(createCard('CPU Info', data.cpu_memory_disk.cpu.join('\n')));
+                                                container.appendChild(createCard('Memory Info', data.cpu_memory_disk.memory.join('\n')));
+                                                container.appendChild(createCard('Disk Info', data.cpu_memory_disk.disk.join('\n')));
+
+                                                // Environment
+                                                container.appendChild(createCard('Environment Variables', data.environment.join('\n')));
+
+                                                // Tools
+                                                const toolsContent = data.tools.map(tool => {
+                                                        const key = Object.keys(tool)[0];
+                                                        return `${key}: ${tool[key]}`;
+                                                }).join('\n');
+                                                container.appendChild(createCard('Installed Tools', toolsContent));
+
+                                                // Networking
+                                                const netContent = `Hostname/IP: ${data.networking.hostname_ip}\nConnections:\n${data.networking.connections.join('\n')}`;
+                                                container.appendChild(createCard('Networking', netContent));
+
+                                        } catch (err) {
+                                                const container = document.getElementById('bash-cgi-cards');
+                                                container.innerHTML = `<div class="card"><h2>Error</h2><pre>${err}</pre></div>`;
+                                                console.error(err);
+                                        }
+                                }
+
+                                fetchBashCgiInfo();
+                                setInterval(fetchBashCgiInfo, 10000); // refresh every 10s
+                        </script>
+                </section>
+
+
+
+
+
+
+        </main>
+
+        <footer id="site-footer" class="site-footer" role="contentinfo">
+
+                <div id="footer-links" class="footer-loading">Loading links…</div>
+                <div id="footer-legal" class="footer-loading">Loading legal…</div>
+                <div id="footer-about" class="footer-loading">Loading about…</div>
+
+        </footer>
+        <script src="/js/nav.js"></script>
+        <script src="/js/page.js"></script>
+        <script src="/js/loader.js"></script>
+        <script src="/js/footer.js"></script>
+        <script src="/js/contributors.js"></script>
+        <script src="/js/system.js"></script>
+
+</body>
+
+</html>

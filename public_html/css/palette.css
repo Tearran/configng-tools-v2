@@ -1,0 +1,42 @@
+:root {
+        /* === Light palette === */
+        --bg: #c3c3c3;
+        /* body background */
+        --text: #333333;
+        /* dark text */
+        --nav: #f8f9fa;
+        /* nav background */
+        --header: #ffffff;
+        /* header background */
+        --footer: #e9ecef;
+        /* footer background */
+        --card: #ffffff;
+        /* nav cards */
+        --accent: #007bff;
+        /* link color */
+        --accent-hover: #0056b3;
+        /* hover link */
+        --accent-contrast: #d6336c;
+        /* active link */
+        --border: rgba(0, 0, 0, 0.1);
+        --shadow: rgba(0, 0, 0, 0.15);
+
+        /* === Dark palette === */
+        --bg-inverted: #23262f;
+        /* body background */
+        --text-inverted: #ffffff;
+        /* light text */
+        --nav-inverted: #678a87;
+        /* nav background */
+        --header-inverted: #1b1c20;
+        /* header background */
+        --card-inverted: #23262f;
+        /* nav cards */
+        --footer-inverted: #2c2f38;
+        /* footer background */
+        --accent-inverted: #00ff00;
+        --accent-hover-inverted: #66ff66;
+        --accent-contrast-inverted: #ff00ff;
+        --border-inverted: rgba(255, 255, 255, 0.1);
+        --shadow-inverted: rgba(0, 0, 0, 0.5);
+}
