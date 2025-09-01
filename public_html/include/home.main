@@ -1,0 +1,4 @@
+<section id="home" class="page-section card">
+  <h2>Home</h2>
+  <p>This is the about content loaded from /include/about.main. Edit this file on disk to update the section without modifying index.html.</p>
+</section>

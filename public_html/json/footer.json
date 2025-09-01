@@ -1,0 +1,49 @@
+[
+  {
+    "type": "links",
+    "title": "Resources",
+    "items": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/Tearran"
+      },
+      {
+        "label": "YouTube",
+        "href": "https://www.youtube.com/@tearran13"
+      }
+    ]
+  },
+  {
+    "type": "links",
+    "title": "Community",
+    "items": [
+      {
+        "label": "Armbian - Discord",
+        "href": "https://discord.gg/armbian"
+      }
+    ]
+  },
+  {
+    "type": "links",
+    "title": "Other links",
+    "items": [
+      {
+        "label": "Armbian - Downloads",
+        "href": "https://www.armbian.com/download/"
+      },
+      {
+        "label": "FOSS Tools - Code Rabbit",
+        "href": "https://www.coderabbit.ai/",
+        "title": "Thanks to Code Rabbit for the FOSS AI tools"
+      }
+    ]
+  },
+  {
+    "type": "legal",
+    "html": "<p>All trademarks are the property of their respective owners. All rights reserved.</p><p>This site is not affiliated with or endorsed by any of the companies mentioned.</p><p>Content is provided \"as is\" and is for informational purposes only. Use at your own risk.</p>"
+  },
+  {
+    "type": "about",
+    "html": "<p>Powered by boredom, caffeine, and questionable time management</p><p>&copy; 2025 Joey Turner</p>"
+  }
+]

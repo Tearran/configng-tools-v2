@@ -1,0 +1,175 @@
+/* Reset / body */
+html,
+body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+}
+
+body {
+        background: var(--bg);
+        color: var(--ui-text);
+        font-family: system-ui, sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+}
+
+/* Header */
+.site-header {
+        background: var(--header-inverted);
+        color: var(--text-inverted);
+        box-shadow: 0 2px 6px var(--shadow);
+        padding: 1rem;
+}
+
+.site-header .brand {
+        display: flex;
+        /* arrange children horizontally */
+        align-items: center;
+        /* vertically center the items */
+        gap: 1rem;
+        /* spacing between logo and title */
+}
+
+.site-header .brand img {
+        flex-shrink: 0;
+        /* prevent the logo from shrinking */
+}
+
+.site-header .site-title {
+        display: flex;
+        align-items: center;
+}
+
+
+/* Nav */
+.site-nav {
+        max-width: 85%;
+        margin: -1rem auto 1rem auto;
+        padding: 0.75rem 2rem;
+        background: var(--nav);
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 12px var(--shadow);
+}
+
+.card {
+        border-radius: 0;
+        background: var(--card);
+        padding: 1rem;
+        margin-bottom: 2em;
+        box-shadow: 0 2px 6px var(--shadow);
+}
+
+/* Remove default list style and spacing */
+.nav-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        display: flex;
+        /* makes list items horizontal */
+        gap: 1.5rem;
+        /* space between items */
+        align-items: center;
+}
+
+/* Make the links look like nav bar items */
+.nav-link {
+        text-decoration: none;
+        color: var(--text);
+        font-weight: 500;
+        padding: 0.5rem 1rem;
+        transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* Hover/focus states */
+.nav-link:hover,
+.nav-link:focus {
+        background: var(--accent);
+        color: var(--accent-contrast);
+        /* border-radius removed for sharp edges */
+}
+
+
+/* Main */
+.site-main {
+        flex: 1;
+        padding: 1rem;
+}
+
+
+
+/* Links */
+a {
+        color: var(--ui-accent);
+        text-decoration: none;
+        transition: color 0.2s;
+}
+
+a:hover {
+        color: var(--ui-accent-hover);
+}
+
+a:active {
+        color: var(--ui-accent-contrast);
+}
+
+
+/* Mini contributor cards (small icons) */
+main .contributor {
+        padding: 1rem 0.5rem;
+        background: var(--card);
+        border-radius: var(--radius, 4px);
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        text-align: center;
+        font-size: 0.75rem;
+        /* smaller text */
+        line-height: 1.1;
+        /* tighter spacing */
+}
+
+/* Avatar fills most of the mini card */
+main .contributor img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 2px;
+        /* less gap below image */
+}
+
+/* Name and meta stacked tightly */
+main .contributor .name {
+        margin: 0;
+        padding: 0;
+}
+
+main .contributor .meta {
+        margin: 0;
+        padding: 0;
+        font-size: 0.65rem;
+        /* even smaller */
+        opacity: 0.75;
+        /* deemphasized */
+}
+
+/* Container: horizontal row */
+#contributors-container .grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        /* less gap between cards */
+        justify-content: flex-start;
+        align-items: center;
+}
+
+
+#system-frame {
+        width: 100%;
+        border: none;
+        overflow: hidden;
+        margin: 0 auto;
+}

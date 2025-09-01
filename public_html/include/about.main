@@ -1,0 +1,40 @@
+<section id="about" class="page-section" aria-labelledby="about-heading">
+
+<div class="card">
+  <p>
+  Made from boredom,  caffeine, and questionable time management — a tiny experiment in innovating Bash usage.
+  </p>
+
+  <h3>How to add a page (three steps)</h3>
+  <ol>
+    <li>Drop a file named <code>/include/slug.main</code> (slug: letters/digits/-/_).</li>
+    <li>Add a nav item in <code>/json/nav.json</code> with <code>{"label":"Name","href":"#slug"}</code>.</li>
+    <li>Reload and click the link — it loads the include into the page.</li>
+  </ol>
+
+  <h3>Notes (brief)</h3>
+  <ul>
+    <li>The loader injects HTML directly. Treat include files as trusted or sanitize them server-side.</li>
+    <li>If changes don't appear, hard-refresh (Ctrl/Cmd+Shift+R) or disable cache in DevTools.</li>
+  </ul>
+</div>
+
+<div class="card">
+  <p>
+  Made from boredom,  caffeine, and questionable time management — a tiny experiment in innovating Bash usage.
+  </p>
+
+  <h3>How to add a page (three steps)</h3>
+  <ol>
+    <li>Drop a file named <code>/include/slug.main</code> (slug: letters/digits/-/_).</li>
+    <li>Add a nav item in <code>/json/nav.json</code> with <code>{"label":"Name","href":"#slug"}</code>.</li>
+    <li>Reload and click the link — it loads the include into the page.</li>
+  </ol>
+
+  <h3>Notes (brief)</h3>
+  <ul>
+    <li>The loader injects HTML directly. Treat include files as trusted or sanitize them server-side.</li>
+    <li>If changes don't appear, hard-refresh (Ctrl/Cmd+Shift+R) or disable cache in DevTools.</li>
+  </ul>
+</div>
+</section>

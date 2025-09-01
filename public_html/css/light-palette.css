@@ -1,0 +1,47 @@
+:root {
+        /* Normal / light theme variables */
+        --bg: #f7f7f9;
+        /* very light gray background */
+        --text: #1e1e1e;
+        /* dark neutral text */
+        --card: #ffffff;
+        /* pure white card */
+        --accent: #0078d7;
+        /* bright but not harsh blue */
+        --accent-hover: #005a9e;
+        /* deeper blue for hover */
+        --accent-contrast: #e63946;
+        /* vivid red for contrast actions */
+        --border: rgba(0, 0, 0, 0.08);
+        --shadow-color: rgba(0, 0, 0, 0.1);
+
+        /* Inverted / dark theme variables */
+        --bg-inverted: #1c1c1e;
+        /* dark neutral background */
+        --text-inverted: #f5f5f5;
+        /* soft light text */
+        --card-inverted: #2c2c2e;
+        /* dark gray card */
+        --accent-inverted: #4cc9f0;
+        /* bright cyan accent */
+        --accent-hover-inverted: #3a86ff;
+        /* bold blue hover */
+        --accent-contrast-inverted: #ff6b6b;
+        /* warm red contrast */
+        --border-inverted: rgba(255, 255, 255, 0.1);
+        --shadow-color-inverted: rgba(0, 0, 0, 0.5);
+
+        /* Layout tokens */
+        --max-width: 1100px;
+
+        /* UI-facing aliases (styles use these). Swapping theme means reassigning these aliases. */
+        --ui-bg: var(--bg);
+        --ui-text: var(--text);
+        --ui-card: var(--card);
+        --ui-accent: var(--accent);
+        --ui-accent-hover: var(--accent-hover);
+        --ui-accent-contrast: var(--accent-contrast);
+        --ui-border: var(--border);
+        --ui-shadow: 0 1px 3px var(--shadow-color);
+        --ui-button-text: #ffffff;
+}
