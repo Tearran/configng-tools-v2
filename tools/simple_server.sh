@@ -20,7 +20,7 @@ simple_server() {
 			_about_simple_server
 			;;
 		"")
-			_simple_server_main "${PROJECT_ROOT}/public_html"
+			_simple_server_main "${PROJECT_ROOT}/public_html" || _simple_server_main "${PROJECT_ROOT}/docs"
 			;;
 		*)
 			echo "Unknown command: ${1}" >&2
@@ -71,7 +71,7 @@ _simple_server_main() {
  	#python3 -m http.server 8080 --cgi &
 	# Pick first non-localhost IP
 	BIND_IP=$(hostname -I | awk '{print $1}')
-	python3 -m http.server 8080 --cgi --bind "$BIND_IP"
+	python3 -m http.server 8080 --cgi --bind "$BIND_IP" &
 
 	local PYTHON_PID=$!
 	echo "Python web server started with PID ${PYTHON_PID}"
